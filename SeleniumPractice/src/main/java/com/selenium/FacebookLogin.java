@@ -1,55 +1,45 @@
 package com.selenium;
 
 import java.time.Duration;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.openqa.selenium.support.ui.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class FacebookLogin {
-
     public static void main(String[] args) {
-
         WebDriverManager.chromedriver().setup();
-
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
+        // Step 1: Open Facebook login page
         driver.get("https://www.facebook.com/login/");
 
-        WebElement email = wait.until(
-                ExpectedConditions.elementToBeClickable(By.id("email"))
-        );
+        // Step 2: Wait for elements
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        email.click();
-        new Actions(driver)
-                .sendKeys("test@gmail.com")
-                .perform();
+        // Step 3: Find email box and type email
+        WebElement email = wait.until(ExpectedConditions.elementToBeClickable(By.name("email")));
+        email.sendKeys("test@gmail.com");
 
-        WebElement password = wait.until(
-                ExpectedConditions.elementToBeClickable(By.id("pass"))
-        );
+        // Step 4: Find password box and type password
+        WebElement password = wait.until(ExpectedConditions.elementToBeClickable(By.name("pass")));
+        password.sendKeys("1234");
+ 
 
-        password.click();
-        new Actions(driver)
-                .sendKeys("1234")
-                .perform();
+        // Step 5: Find login button using text 'Log in'
+        WebElement loginText = wait.until(
+        	    ExpectedConditions.visibilityOfElementLocated(
+        	        By.xpath("//span[text()='Log in']")
+        	    )
+        	);
 
-        WebElement loginButton = wait.until(
-                ExpectedConditions.elementToBeClickable(By.name("login"))
-        );
+        	JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        loginButton.click();
-
-        System.out.println("Login button clicked");
-    }
+        	js.executeScript(
+        	    "arguments[0].closest('div[role=\"button\"]').click();",
+        	    loginText
+        	);
+        	
+}
 }
